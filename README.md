@@ -3,7 +3,8 @@
 [![CI Status](https://img.shields.io/travis/km/KMNavigationBar.svg?style=flat)](https://travis-ci.org/km/KMNavigationBar) [![Version](https://img.shields.io/cocoapods/v/KMNavigationBar.svg?style=flat)](https://cocoapods.org/pods/KMNavigationBar) [![License](https://img.shields.io/cocoapods/l/KMNavigationBar.svg?style=flat)](https://cocoapods.org/pods/KMNavigationBar) [![Platform](https://img.shields.io/cocoapods/p/KMNavigationBar.svg?style=flat)](https://cocoapods.org/pods/KMNavigationBar)
 
 ## Gif
-![Push-w200](https://i.loli.net/2019/11/12/isCmZNfWjwUH9ad.gif)![Pop-w200](https://i.loli.net/2019/11/12/ITWnBmuNRj6dqwr.gif)![Effect-w200](https://i.loli.net/2019/11/12/MRXIB7OQjoiGUrq.gif)
+<img src="https://i.loli.net/2019/11/12/isCmZNfWjwUH9ad.gif" width="256"><img src="https://i.loli.net/2019/11/12/ITWnBmuNRj6dqwr.gif" width="256"><img src="https://i.loli.net/2019/11/12/MRXIB7OQjoiGUrq.gif" width="256">
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
