@@ -12,4 +12,4 @@ script:
 - xctool run-tests -workspace Example/KMNavigationBar.xcworkspace -scheme KMNavigationBar-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
 - pod lib lint --allow-warnings
 - pod spec lint --allow-warnings
-- pod trunk push --allow-warnings
+# - pod trunk push --allow-warnings
