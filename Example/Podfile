@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'KMNavigationBar_Example' do
+  pod 'KMNavigationBar', :path => '../'
+
+  target 'KMNavigationBar_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
