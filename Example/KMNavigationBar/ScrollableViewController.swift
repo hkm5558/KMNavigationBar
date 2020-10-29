@@ -11,7 +11,10 @@ import KMNavigationBar
 
 class ScrollableViewController: UITableViewController {
 
-
+    deinit {
+        debugPrint(classForCoder.description(), #function)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

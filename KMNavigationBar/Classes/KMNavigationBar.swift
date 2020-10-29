@@ -129,6 +129,9 @@ extension KMNavigationBar {
     func removeTransitionFakeBar() {
         self.fromFakeBar.removeFromSuperview()
         self.toFakeBar.removeFromSuperview()
+
+        self.fromViewController = nil
+        self.toViewController = nil
     }
 
     func addFromFakeBar(to fromVc: UIViewController) {
