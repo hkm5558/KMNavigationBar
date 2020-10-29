@@ -16,7 +16,9 @@ class ScrollableViewController: UITableViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
+
+        navigationItem.title = "ScrollableViewController"
+
         let color = AppDelegate.shared!.colors.randomElement()!
         view.backgroundColor = color
     }
@@ -41,7 +43,7 @@ class ScrollableViewController: UITableViewController {
         }
     }
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let (section, row, cell, storyboard) = (indexPath.section,  indexPath.row, tableView.cellForRow(at: indexPath), UIStoryboard(name: "Main", bundle: Bundle.main))
+        let (section, row, cell) = (indexPath.section,  indexPath.row, tableView.cellForRow(at: indexPath))
         switch (section, row) {
         case (0, 0):
             let effect = AppDelegate.shared!.effects.randomElement()!
@@ -88,11 +90,21 @@ class ScrollableViewController: UITableViewController {
             cell?.detailTextLabel?.text = "\(color)"
             view.backgroundColor = color
         case (3, 0):
-            let vc = storyboard.instantiateViewController(withIdentifier: ScrollableViewController.classForCoder().description())
+            let vc = AppDelegate.shared!.scrollableVc!
             navigationController?.pushViewController(vc, animated: true)
         case (3, 1):
-            let vc = storyboard.instantiateViewController(withIdentifier: ViewController.classForCoder().description())
+            let vc = AppDelegate.shared!.mainVc!
             navigationController?.pushViewController(vc, animated: true)
+        case (4, 0):
+            let vc = AppDelegate.shared!.scrollableVc!
+            let navVc = UINavigationController(rootViewController: vc, preference: nil)
+            // navVc.modalPresentationStyle = .fullScreen
+            self.present(navVc, animated: true, completion: nil)
+        case (4, 1):
+            let vc = AppDelegate.shared!.mainVc!
+            let navVc = UINavigationController(rootViewController: vc, preference: nil)
+            // navVc.modalPresentationStyle = .fullScreen
+            self.present(navVc, animated: true, completion: nil)
         default:
             break
         }

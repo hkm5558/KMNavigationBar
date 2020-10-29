@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'KMNavigationBar'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = '控制器切换时，让导航栏平滑过渡（颜色、图片、透明度）'
 
 # This description is used to generate tags and improve search results.
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.author           = { 'km' => 'szhuangkm@163.com' }
   s.source           = { :git => 'https://github.com/hkm5558/KMNavigationBar.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-  s.swift_version    = '4.2'
+  s.swift_version    = '5.0'
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'KMNavigationBar/Classes/**/*'

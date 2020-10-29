@@ -15,6 +15,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
+        navigationItem.title = "ViewController"
+
         if AppDelegate.shared!.isRandomTintColor {
             let color = AppDelegate.shared!.colors.randomElement()!
             self.navigationBarHelper.performUpdate { (op) in
@@ -28,11 +30,23 @@ class ViewController: UIViewController {
                 op.backgroundEffect = .color(color)
             }
         }
+
         if navigationController?.navigationProxy.delegate == nil {
             navigationController?.navigationProxy.delegate = self
         }
-    }
 
+        let button = UIButton(type: .custom)
+        button.frame = .init(x: 0, y: 0, width: 44, height: 44)
+        button.setTitle("present", for: .normal)
+        button.addTarget(self, action: #selector(presentNextViewController), for: .touchUpInside)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: button)
+    }
+    @objc func presentNextViewController() {
+        let vc = AppDelegate.shared!.mainVc!
+        let navVc = UINavigationController(rootViewController: vc, preference: nil)
+        navVc.modalPresentationStyle = .fullScreen
+        self.present(navVc, animated: true, completion: nil)
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -41,6 +55,6 @@ class ViewController: UIViewController {
 
 extension ViewController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        debugPrint(#function)
+        debugPrint(self, #function)
     }
 }

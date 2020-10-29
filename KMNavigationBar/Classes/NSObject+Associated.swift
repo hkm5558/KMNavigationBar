@@ -41,6 +41,5 @@ public extension NSObjectProtocol {
         }
         return object
     }
-    
 }
 

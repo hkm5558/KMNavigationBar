@@ -24,7 +24,7 @@ public extension UIViewController {
 
 public class KMNavigationBarHelper: NSObject {
 
-    public fileprivate(set) var option: KMNavigationBarOption = KMNavigationBarOption()
+    public fileprivate(set) var option: KMNavigationBarOption = KMNavigationBarOption.default.option() //()
     fileprivate weak var viewController: UIViewController?
     fileprivate weak var navigationBar: UINavigationBar?
     required init(viewController: UIViewController) {

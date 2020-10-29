@@ -17,19 +17,25 @@ class KMNavigationTransitionHelper: NSObject {
     }
     
     func transitionWillShow(viewController: UIViewController) {
-        guard   let preference = navigationController?.preference else { return }
-        guard   let bar = navigationController?.navigationBar as? KMNavigationBar else {
+        guard  let preference = navigationController?.preference else {
+            return
+        }
+        guard  let bar = navigationController?.navigationBar as? KMNavigationBar else {
                 return
         }
-        guard   let coordinator = navigationController?.transitionCoordinator else {
+        guard  let coordinator = navigationController?.transitionCoordinator else {
             bar.updateToOption(viewController.navigationBarHelper.option)
                 return
         }
         coordinator.animate(alongsideTransition: { (ctx) in
-            guard   let fromVc = ctx.viewController(forKey: .from),
-                    let toVc = ctx.viewController(forKey: .to) else {
+            guard   var fromVc = ctx.viewController(forKey: .from),
+                    var toVc = ctx.viewController(forKey: .to) else {
                     return
             }
+
+            fromVc = fromVc.excludeNavigationController()
+            toVc = toVc.excludeNavigationController()
+
             let fromOption = fromVc.navigationBarHelper.option
             let toOption = toVc.navigationBarHelper.option
             let isSameOption = KMNavigationBarOption.isSameOption(lhs: fromOption, rhs: toOption, preference: preference)
@@ -45,7 +51,10 @@ class KMNavigationTransitionHelper: NSObject {
             }
                 bar.updateToOption(toOption)
         }) { (ctx) in
-            if ctx.isCancelled, let fromVc = ctx.viewController(forKey: .from)  {
+            if ctx.isCancelled, var fromVc = ctx.viewController(forKey: .from)  {
+
+                fromVc = fromVc.excludeNavigationController()
+      
                 // rollback navigationBar and fakeBar option if transition is cancelled
                 bar.updateToOption(fromVc.navigationBarHelper.option)
             }
@@ -54,5 +63,11 @@ class KMNavigationTransitionHelper: NSObject {
             // show fakeBar
             bar.isBackgroundFakeBarHidden = false
         }
+    }
+}
+fileprivate extension UIViewController {
+    func excludeNavigationController() -> UIViewController {
+        guard let naviVc = self as? UINavigationController, let vc = naviVc.viewControllers.last else { return self }
+        return vc
     }
 }

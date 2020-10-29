@@ -180,7 +180,7 @@ extension KMNavigationBarOption {
 public extension KMNavigationBarOption {
 
     /// Effect
-    public enum Effect: Equatable {
+    enum Effect: Equatable {
 
         /// blur effect
         case blur(UIBlurEffect.Style)

@@ -40,11 +40,17 @@ class KMNavigationBar: UINavigationBar {
     private var _option: KMNavigationBarOption?
     
     /// FakeBar
-    private lazy var fakeBar: KMFakeBarView = KMFakeBarView()
+    private lazy var fakeBar = KMFakeBarView()
 
-    private lazy var fromFakeBar: KMFakeBarView = KMFakeBarView()
+    private lazy var fromFakeBar = KMFakeBarView()
 
-    private lazy var toFakeBar: KMFakeBarView = KMFakeBarView()
+    private lazy var toFakeBar = KMFakeBarView()
+
+    private var fromViewController: UIViewController?
+
+    private var toViewController: UIViewController?
+
+    private var displayLink: CADisplayLink?
 
     // MARK: ---------------- override ----------------
     // MARK: - For override system logic
@@ -65,10 +71,29 @@ class KMNavigationBar: UINavigationBar {
         get { return super.alpha }
         set { super.alpha = self._alpha }
     }
-    
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        commonInit()
+    }
+
+    private func commonInit() {
+        displayLink = CADisplayLink(target: self, selector: #selector(refreshDisplay))
+//        displayLink?.frameInterval = 2
+        displayLink?.add(to: .main, forMode: .common)
+    }
     public override func layoutSubviews() {
         super.layoutSubviews()
-        addBackgroundFakeBar()
+
+        guard let bgView = self.findBackgroundView() else {
+            return
+        }
+        bgView.backgroundColor = .clear
+        fakeBar.frame = bgView.bounds
     }
 }
 extension KMNavigationBar {
@@ -107,10 +132,12 @@ extension KMNavigationBar {
     }
 
     func addFromFakeBar(to fromVc: UIViewController) {
+        fromViewController = fromVc
         addFakeBar(fake: fromFakeBar, to: fromVc)
     }
 
     func addToFakeBar(to toVc: UIViewController) {
+        toViewController = toVc
         addFakeBar(fake: toFakeBar, to: toVc)
     }
 
@@ -119,14 +146,10 @@ extension KMNavigationBar {
         
         guard let preference = self.preference else { return }
         let option = vc.navigationBarHelper.option
-        // set fakeBar option & frame without animation
         UIView.performWithoutAnimation {
             removeWhiteCoverWhenNotTranslucent()
             // set option
             fake.updateToOption(vc.navigationBarHelper.option, preference: preference)
-
-            var fakeFrame = fakeBar.superview?.convert(fakeBar.bounds, to: vc.view) ?? fakeBar.bounds
-//            debugPrint("fakeFrame ===== \(fakeFrame)")
             if vc.view.isKind(of: UIScrollView.self) || vc.edgesForExtendedLayout == UIRectEdge(rawValue: 0) {
                 vc.view.clipsToBounds = false
             }
@@ -139,10 +162,6 @@ extension KMNavigationBar {
             
             fake.contentView.alpha = alpha * backgroundAlpha
             fake.shadowImageView.alpha = alpha * shadowImageAlpha
-            
-            fakeFrame.origin.x = fakeBar.frame.origin.x
-
-            fake.frame = fakeFrame
 
             // add subview
             vc.view.addSubview(fake)
@@ -152,23 +171,10 @@ extension KMNavigationBar {
 
 private extension KMNavigationBar {
     
-    func findSuperView() -> UIView? {
+    func findBackgroundView() -> UIView? {
         return subviews.first(where: {
             $0.isUIbarBackGround() || $0.isUINavigationBarBackground()
         })
-    }
-    
-    func addBackgroundFakeBar() {
-        guard let view = findSuperView() else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                self.addBackgroundFakeBar()
-            }
-            return
-        }
-        view.backgroundColor = .clear
-        fakeBar.frame = view.bounds
-        guard fakeBar.superview == nil else { return }
-        view.insertSubview(fakeBar, at: 0)
     }
     
     func removeWhiteCoverWhenNotTranslucent() {
@@ -194,13 +200,45 @@ private extension KMNavigationBar {
             }
         })
     }
+
+    @objc func refreshDisplay() {
+        if let barSuperView = fakeBar.superview {
+            let rect = barSuperView.bounds
+            if !fakeBar.frame.equalTo(rect) {
+                fakeBar.frame = rect
+            }
+
+            if fromFakeBar.superview != nil,
+                let fromVc = fromViewController {
+                var fakeFrame = barSuperView.convert(rect, to: fromVc.view)
+                if !fakeFrame.equalTo(fromFakeBar.frame) {
+                    fakeFrame.origin.x = fakeBar.frame.origin.x
+                    fromFakeBar.frame = fakeFrame
+                }
+            }
+            if toFakeBar.superview != nil,
+                let toVc = toViewController {
+                var fakeFrame = barSuperView.convert(rect, to: toVc.view)
+                if !fakeFrame.equalTo(toFakeBar.frame) {
+                    fakeFrame.origin.x = fakeBar.frame.origin.x
+                    toFakeBar.frame = fakeFrame
+                }
+            }
+        }
+
+        guard self.fakeBar.superview == nil else { return }
+        guard let bgView = self.findBackgroundView() else {
+            return
+        }
+        bgView.insertSubview(self.fakeBar, at: 0)
+    }
 }
 
 fileprivate class KMFakeBarView: UIView {
 
-    lazy var effectView: UIVisualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    lazy var effectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
 
-    lazy var colorView: UIView = UIView()
+    lazy var colorView = UIView()
 
     lazy var backgroundImageView: UIImageView = {
         let imageV = UIImageView()
